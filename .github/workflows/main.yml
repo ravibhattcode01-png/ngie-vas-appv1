@@ -28,15 +28,13 @@ jobs:
         run: flutter --version
 
       - name: Generate Android platform files
-        run: flutter create . --org in.ngie --project-name ngie_vas_app --platforms=android
+        run: flutter create . --org com.ngie --project-name ngie_vas_app --platforms=android
 
       - name: Bump Kotlin plugin version
         run: |
           for f in android/settings.gradle android/settings.gradle.kts; do
             [ -f "$f" ] && sed -i -E 's/(org\.jetbrains\.kotlin\.android"?\)? version )"[0-9.]+"/\1"1.9.25"/' "$f"
           done
-          echo "----- settings.gradle -----"
-          cat android/settings.gradle 2>/dev/null || cat android/settings.gradle.kts 2>/dev/null
 
       - name: Add INTERNET permission
         run: |
