@@ -32,15 +32,19 @@ jobs:
 
       - name: Bump Kotlin plugin version
         run: |
-          for f in android/settings.gradle android/settings.gradle.kts; do
-            [ -f "$f" ] && sed -i -E 's/(org\.jetbrains\.kotlin\.android"?\)? version )"[0-9.]+"/\1"1.9.25"/' "$f"
-          done
+          if [ -f android/settings.gradle ]; then
+            sed -i -E 's/(org\.jetbrains\.kotlin\.android"?\)? version )"[0-9.]+"/\1"1.9.25"/' android/settings.gradle
+          fi
+          if [ -f android/settings.gradle.kts ]; then
+            sed -i -E 's/(org\.jetbrains\.kotlin\.android"?\)? version )"[0-9.]+"/\1"1.9.25"/' android/settings.gradle.kts
+          fi
 
       - name: Add INTERNET permission
         run: |
           MANIFEST=android/app/src/main/AndroidManifest.xml
-          grep -q "android.permission.INTERNET" "$MANIFEST" || \
-          sed -i 's#<manifest\(.*\)>#<manifest\1>\n    <uses-permission android:name="android.permission.INTERNET"/>#' "$MANIFEST"
+          if ! grep -q "android.permission.INTERNET" "$MANIFEST"; then
+            sed -i 's#<manifest\(.*\)>#<manifest\1>\n    <uses-permission android:name="android.permission.INTERNET"/>#' "$MANIFEST"
+          fi
 
       - name: Set minSdk to 21 (required by Razorpay)
         run: |
